@@ -55,11 +55,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actors\DataProcessingActor.cs" />
     <Compile Include="Actors\FileProcessingActor.cs" />
     <Compile Include="Actors\NotificationsActor.cs" />
     <Compile Include="Actors\RowProcessingActor.cs" />
     <Compile Include="Messages\ProcessRowMessage.cs" />
     <Compile Include="Messages\ProcessRowNotificationMessage.cs" />
+    <Compile Include="Models\TransactionsFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

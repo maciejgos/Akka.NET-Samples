@@ -1,19 +1,44 @@
 ﻿using System;
 using Akka.Actor;
 using FileProcessingDemo.Messages;
+using System.Threading;
 
 namespace FileProcessingDemo.Actors
 {
     class RowProcessingActor : ReceiveActor
     {
-        public RowProcessingActor()
+        readonly int rowID;
+
+        public RowProcessingActor(ProcessRowMessage message)
         {
-            Receive<ProcessRowMessage>(message => HandleProcessRowMessage(message), null);
+            rowID = message.RowID;
+            Receive<ProcessRowMessage>(msg =>
+            {
+                Thread.Sleep(5000);
+                Console.WriteLine($"Process row {msg.RowID} ");
+            });
         }
 
-        private void HandleProcessRowMessage(ProcessRowMessage message)
+        protected override void PreStart()
         {
-            Console.WriteLine("Start processing row..." + message);
+            Console.WriteLine($"{nameof(RowProcessingActor)} PreStart");
+        }
+
+        protected override void PostStop()
+        {
+            Console.WriteLine($"{nameof(RowProcessingActor)} PostStop");
+        }
+
+        protected override void PreRestart(Exception reason, object message)
+        {
+            Console.WriteLine($"{nameof(RowProcessingActor)} PreRestart, Reason: {reason}");
+            base.PreRestart(reason, message);
+        }
+
+        protected override void PostRestart(Exception reason)
+        {
+            Console.WriteLine($"{nameof(RowProcessingActor)} PostRestart, Reason: {reason}");
+            base.PostRestart(reason);
         }
     }
 }

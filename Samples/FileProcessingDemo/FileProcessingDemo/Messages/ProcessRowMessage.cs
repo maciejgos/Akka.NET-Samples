@@ -2,10 +2,13 @@
 {
     class ProcessRowMessage
     {
+        public int RowID { get; }
+
         public string RowData { get; }
 
-        public ProcessRowMessage(string rowData)
+        public ProcessRowMessage(int rowId, string rowData)
         {
+            RowID = rowId;
             RowData = rowData;
         }
     }

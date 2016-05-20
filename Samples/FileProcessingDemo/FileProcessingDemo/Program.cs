@@ -16,33 +16,29 @@ namespace FileProcessingDemo
             _fileProcessingSystem = ActorSystem.Create("FileProcessingSystem");
 
             Console.WriteLine("Create supervisor actor hierarchy");
-            _fileProcessingSystem.ActorOf(Props.Create<FileProcessingActor>(),"FileProcessor");
+            _fileProcessingSystem.ActorOf(Props.Create<FileProcessingActor>(), "FileProcessor");
 
             do
             {
                 Thread.Sleep(400);
 
                 Console.WriteLine();
-                Console.WriteLine("Enter exit command to stop process");
+                Console.WriteLine("Enter command to process");
 
                 var command = Console.ReadLine();
 
                 if (command == "start")
                 {
-                    for (int i = 0; i < 100; i++)
-                    {
-                        _fileProcessingSystem.ActorSelection("/user/FileProcessor/RowProcessor").Tell(new ProcessRowMessage("row"));
-                    } 
+                    _fileProcessingSystem.ActorSelection("/user/FileProcessor/DataProcessor").Tell(new ProcessRowMessage(1, "rowData"));
                 }
 
 
                 if (command == "exit")
                 {
-                    _fileProcessingSystem.Terminate();
-                    var result = _fileProcessingSystem.WhenTerminated;
-                    Console.WriteLine("Actor system shutdown");
+                    _fileProcessingSystem.ActorSelection("/user/FileProcessor").Tell(PoisonPill.Instance);
+
                     Console.ReadKey();
-                    Environment.Exit(Environment.ExitCode); 
+                    Environment.Exit(Environment.ExitCode);
                 }
 
             } while (true);
