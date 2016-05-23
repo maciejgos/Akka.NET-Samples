@@ -3,12 +3,14 @@ using Akka.Actor;
 using FileProcessingDemo.Actors;
 using FileProcessingDemo.Messages;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace FileProcessingDemo
 {
     class Program
     {
         static ActorSystem _fileProcessingSystem;
+        static List<ProcessRowMessage> mockCollection;
 
         static void Main(string[] args)
         {
@@ -29,7 +31,16 @@ namespace FileProcessingDemo
 
                 if (command == "start")
                 {
-                    _fileProcessingSystem.ActorSelection("/user/FileProcessor/DataProcessor").Tell(new ProcessRowMessage(1, "rowData"));
+#if DEBUG
+                    PrepareMockData();
+#endif
+
+#if DEBUG
+                    foreach (var message in mockCollection)
+                    {
+                        _fileProcessingSystem.ActorSelection("/user/FileProcessor/DataProcessor").Tell(message);
+                    }
+#endif
                 }
 
 
@@ -42,6 +53,16 @@ namespace FileProcessingDemo
                 }
 
             } while (true);
+        }
+
+        private static void PrepareMockData()
+        {
+            mockCollection = new List<ProcessRowMessage>();
+
+            for (int i = 0; i < 400000; i++)
+            {
+                mockCollection.Add(new ProcessRowMessage(i, $"RowData {i}"));
+            }
         }
     }
 }
