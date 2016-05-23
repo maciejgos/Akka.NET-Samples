@@ -1,5 +1,6 @@
 ﻿using System;
 using Akka.Actor;
+using FileProcessingDemo.Messages;
 
 namespace FileProcessingDemo.Actors
 {
@@ -11,13 +12,15 @@ namespace FileProcessingDemo.Actors
 
         public FileProcessingActor()
         {
-            dataProcessorAct = Context.ActorOf(Props.Create<DataProcessingActor>(), "DataProcessor");
+            dataProcessorAct = Context.ActorOf(Props.Create<DataProcessingActor>(), "dataProcessor");
             notificationsAct = Context.ActorOf(Props.Create<NotificationsActor>(), "Notifications");
 
-            ReceiveAny(msg => dataProcessorAct.Forward(msg));
-
-            /*child = Context.ActorOf(Props.Create<Child>());
-            ReceiveAny(msg => child.Forward(msg));*/
+            Receive<ProcessRowMessage>(msg => dataProcessorAct.Forward(msg));
+            Receive<ExitMessage>(msg =>
+            {
+                Context.Stop(notificationsAct);
+                Context.Stop(dataProcessorAct);
+            });
         }
 
         #region Lifecycle hooks
@@ -44,12 +47,4 @@ namespace FileProcessingDemo.Actors
         } 
         #endregion
     }
-
-    /*class Child : ReceiveActor
-    {
-        public Child()
-        {
-            ReceiveAny(msg => Sender.Tell(msg));
-        }
-    }*/
 }

@@ -2,7 +2,6 @@
 using Akka.Actor;
 using FileProcessingDemo.Actors;
 using FileProcessingDemo.Messages;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace FileProcessingDemo
@@ -10,58 +9,44 @@ namespace FileProcessingDemo
     class Program
     {
         static ActorSystem _fileProcessingSystem;
-        static List<ProcessRowMessage> mockCollection;
+        static List<ProcessRowMessage> mockMsgCollection;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Create FileProcessingSystem");
-            _fileProcessingSystem = ActorSystem.Create("FileProcessingSystem");
+            PrepareMockData();
 
-            Console.WriteLine("Create supervisor actor hierarchy");
-            _fileProcessingSystem.ActorOf(Props.Create<FileProcessingActor>(), "FileProcessor");
+            Console.WriteLine("Start TransactionsProcessingSystem");
 
-            do
+            using (_fileProcessingSystem = ActorSystem.Create("TransactionsProcessingSystem"))
             {
-                Thread.Sleep(400);
+                Console.WriteLine("Create supervisor actor hierarchy");
+                var fileProcessorAct = _fileProcessingSystem.ActorOf(Props.Create<FileProcessingActor>(), "fileProcessor");
 
-                Console.WriteLine();
-                Console.WriteLine("Enter command to process");
+                Console.WriteLine("Start process single message");
+                var dataActor = _fileProcessingSystem.ActorSelection("/user/fileProcessor/dataProcessor");
 
-                var command = Console.ReadLine();
-
-                if (command == "start")
+                foreach (var message in mockMsgCollection)
                 {
-#if DEBUG
-                    PrepareMockData();
-#endif
-
-#if DEBUG
-                    foreach (var message in mockCollection)
-                    {
-                        _fileProcessingSystem.ActorSelection("/user/FileProcessor/DataProcessor").Tell(message);
-                    }
-#endif
+                    dataActor.Tell(message); 
                 }
 
+                //Prevent from shutdown
+                Console.ReadLine();
+                _fileProcessingSystem.Stop(dataActor.Anchor);
 
-                if (command == "exit")
-                {
-                    _fileProcessingSystem.ActorSelection("/user/FileProcessor").Tell(PoisonPill.Instance);
-
-                    Console.ReadKey();
-                    Environment.Exit(Environment.ExitCode);
-                }
-
-            } while (true);
+                //Wait for termination
+                _fileProcessingSystem.WhenTerminated.Wait();
+                Console.WriteLine("System shutdown");
+            }
         }
 
         private static void PrepareMockData()
         {
-            mockCollection = new List<ProcessRowMessage>();
+            mockMsgCollection = new List<ProcessRowMessage>();
 
-            for (int i = 0; i < 400000; i++)
+            for (int i = 0; i < 200; i++)
             {
-                mockCollection.Add(new ProcessRowMessage(i, $"RowData {i}"));
+                mockMsgCollection.Add(new ProcessRowMessage(i, $"RowData {i}"));
             }
         }
     }

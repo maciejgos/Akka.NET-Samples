@@ -59,6 +59,7 @@
     <Compile Include="Actors\FileProcessingActor.cs" />
     <Compile Include="Actors\NotificationsActor.cs" />
     <Compile Include="Actors\RowProcessingActor.cs" />
+    <Compile Include="Messages\ExitMessage.cs" />
     <Compile Include="Messages\ProcessRowMessage.cs" />
     <Compile Include="Messages\ProcessRowNotificationMessage.cs" />
     <Compile Include="Models\TransactionsFile.cs" />

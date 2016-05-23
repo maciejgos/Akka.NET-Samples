@@ -14,7 +14,6 @@ namespace FileProcessingDemo.Actors
             rowID = message.RowID;
             Receive<ProcessRowMessage>(msg =>
             {
-                Thread.Sleep(5000);
                 Console.WriteLine($"Process row {msg.RowID} ");
             });
         }
