@@ -78,6 +78,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TransactionsProcessing.Common\TransactionsProcessing.Common.csproj">
+      <Project>{f039f941-8752-480b-ad21-44706d2b471e}</Project>
+      <Name>TransactionsProcessing.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
