@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\IncomingTransactionHandlerActor.cs" />
+    <Compile Include="Actors\TransactionsReportingActor.cs" />
     <Compile Include="Actors\TransactionsValidationCoordinatorActor.cs" />
     <Compile Include="Actors\TransactionValidatorActor.cs" />
     <Compile Include="Messages\IncomingTransaction.cs" />
