@@ -80,8 +80,10 @@
     <Compile Include="Actors\TransactionValidatorActor.cs" />
     <Compile Include="Messages\IncomingTransaction.cs" />
     <Compile Include="Messages\TransactionValidatingMessage.cs" />
+    <Compile Include="Messages\TransactionValidationBeginMessage.cs" />
     <Compile Include="Messages\TransactionValidMessage.cs" />
     <Compile Include="Models\ITransaction.cs" />
+    <Compile Include="Models\MockTransaction.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
